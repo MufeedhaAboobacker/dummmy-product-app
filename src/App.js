@@ -1,24 +1,70 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import ListProduct from "./components/ListProduct";
+import EditProduct from "./components/EditProduct";
+import DeleteProduct from "./components/DeleteProduct";
+import GetProduct from "./components/GetProduct";
+import AddProductPage from "./pages/AddProductPage";
 
 function App() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("https://dummyjson.com/products?limit=20")
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data.products);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const getProductById = async (id) => {
+    const res = await fetch(`https://dummyjson.com/products/${id}`);
+    if (!res.ok) throw new Error("Product not found");
+    return await res.json();
+  };
+
+  const deleteProductById = async (id) => {
+    setProducts((prev) => prev.filter((p) => p.id !== Number(id)));
+  };
+
+  const updateProductById = (id, updatedData) => {
+    setProducts((prev) =>
+      prev.map((p) => (p.id === Number(id) ? { ...p, ...updatedData } : p))
+    );
+  };
+
+  const addProduct = (newProduct) => {
+    setProducts((prev) => [newProduct, ...prev]);
+  };
+
+  if (loading) return <p className="text-center mt-4">Loading products...</p>;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Header />
+      <main style={{ minHeight: "80vh", padding: "1rem 2rem" }}>
+        <Routes>
+          <Route
+            path="/"
+            element={<ListProduct products={products} getProductById={getProductById} />}
+          />
+          <Route path="/add-product" element={<AddProductPage onAdd={addProduct} />} />
+          <Route path="/edit/:id" element={<EditProduct updateProductById={updateProductById} />} />
+          <Route
+            path="/delete/:id"
+            element={<DeleteProduct deleteProductById={deleteProductById} getProductById={getProductById} />}
+          />
+          <Route path="/product/:id" element={<GetProduct />} />
+        </Routes>
+      </main>
+      <Footer />
+    </Router>
   );
 }
 
