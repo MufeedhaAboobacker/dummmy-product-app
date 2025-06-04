@@ -3,11 +3,18 @@ import { Link } from "react-router-dom";
 
 const Header = () => (
   <header>
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4 shadow-sm">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
-          Product List
+   
+        <Link
+          to="/"
+          className="navbar-brand fw-bold fs-3 text-success"
+          style={{ fontFamily: "'Segoe UI'" }}
+        >
+          Product App
         </Link>
+
+  
         <button
           className="navbar-toggler"
           type="button"
@@ -19,10 +26,27 @@ const Header = () => (
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
-          <ul className="navbar-nav">
-            <li className="nav-item">
-              <Link className="nav-link" to="/add-product">
+
+        <div
+          className="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul className="navbar-nav d-flex align-items-center gap-2">
+            <li>
+              <Link
+                to="/"
+                className="btn btn-outline-success fw-semibold"
+                style={{ fontSize: "1.2rem" }}
+              >
+                Product List
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/add-product"
+                className="btn btn-success fw-semibold"
+                style={{ fontSize: "1.1rem" }}
+              >
                 Add Product
               </Link>
             </li>

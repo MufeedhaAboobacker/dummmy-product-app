@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const GetProduct = ({ productId: propId }) => {
-  const { id: paramId } = useParams(); // From URL if accessed directly
-  const id = propId || paramId; // Prefer prop, fallback to URL param
+  const { id: paramId } = useParams(); 
+  const id = propId || paramId; 
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);

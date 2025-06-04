@@ -31,7 +31,7 @@ const ListProduct = ({ products, getProductById }) => {
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
           />
-          <button className="btn btn-primary" onClick={handleFetch}>
+          <button className="btn btn-success" onClick={handleFetch}>
             Fetch
           </button>
         </div>
@@ -59,7 +59,7 @@ const ListProduct = ({ products, getProductById }) => {
         )}
       </div>
 
-      {/* Products List */}
+ 
       {products.length === 0 ? (
         <p className="text-center mt-5 text-danger fs-5">No products found.</p>
       ) : (

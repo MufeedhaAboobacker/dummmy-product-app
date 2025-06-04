@@ -1,7 +1,6 @@
 import React from "react";
 import AddProduct from "../components/AddProduct";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+
 
 const AddProductPage = ({ onAdd }) => {
   return (

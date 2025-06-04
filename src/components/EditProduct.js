@@ -14,7 +14,7 @@ const EditProduct = ({ updateProductById }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch product details by id on mount
+  
   useEffect(() => {
     if (!id) return;
 
@@ -39,26 +39,26 @@ const EditProduct = ({ updateProductById }) => {
       });
   }, [id]);
 
-  // Handle form input changes
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProductData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle form submit
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validate inputs as needed
+    
     if (!productData.title.trim()) {
       alert("Title is required");
       return;
     }
 
-    // Call update method from parent to update state/api
+   
     updateProductById(id, productData);
 
-    // Navigate back to home or list page
+   
     navigate("/");
   };
 
