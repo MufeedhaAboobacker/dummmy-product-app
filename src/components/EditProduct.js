@@ -1,122 +1,102 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-const EditProduct = ({ updateProductById }) => {
+const EditProduct = ({ getProductById, updateProductById }) => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [product, setProduct] = useState(null);
+  const [form, setForm] = useState({});
+  const [error, setError] = useState("");
 
-  const [productData, setProductData] = useState({
-    title: "",
-    description: "",
-    price: "",
-    thumbnail: "",
-  });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  
   useEffect(() => {
-    if (!id) return;
-
-    setLoading(true);
-    fetch(`https://dummyjson.com/products/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Product not found");
-        return res.json();
-      })
-      .then((data) => {
-        setProductData({
-          title: data.title || "",
-          description: data.description || "",
-          price: data.price || "",
-          thumbnail: data.thumbnail || "",
-        });
-        setLoading(false);
-      })
-      .catch(() => {
-        setError("Failed to fetch product");
-        setLoading(false);
-      });
-  }, [id]);
-
+    const fetchProduct = async () => {
+      try {
+        const data = await getProductById(id);
+        setProduct(data);
+        setForm(data);
+      } catch (err) {
+        setError("Product not found");
+      }
+    };
+    fetchProduct();
+  }, [id, getProductById]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProductData((prev) => ({ ...prev, [name]: value }));
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    
-    if (!productData.title.trim()) {
-      alert("Title is required");
-      return;
-    }
-
-   
-    updateProductById(id, productData);
-
-   
+    updateProductById(id, form);
     navigate("/");
   };
 
-  if (loading) return <p>Loading product data...</p>;
-  if (error) return <p className="text-danger">{error}</p>;
+  if (error) return <p className="text-red-500 text-center mt-4">{error}</p>;
+  if (!product) return <p className="text-center mt-4">Loading product...</p>;
 
   return (
-    <div className="container mt-4" style={{ maxWidth: 600 }}>
-      <h2>Edit Product</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Title</label>
+    <div className="max-w-2xl mx-auto mt-8 p-6 bg-white shadow-md rounded-xl">
+      <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Edit Product</h2>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <label className="block font-semibold mb-1">Title:</label>
           <input
             type="text"
-            className="form-control"
             name="title"
-            value={productData.title}
+            value={form.title}
             onChange={handleChange}
             required
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-400"
           />
         </div>
-        <div className="mb-3">
-          <label className="form-label">Description</label>
+        <div>
+          <label className="block font-semibold mb-1">Description:</label>
           <textarea
-            className="form-control"
             name="description"
-            rows={3}
-            value={productData.description}
+            value={form.description}
             onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-400"
           ></textarea>
         </div>
-        <div className="mb-3">
-          <label className="form-label">Price (₹)</label>
-          <input
-            type="number"
-            className="form-control"
-            name="price"
-            value={productData.price}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Thumbnail URL</label>
+        <div>
+          <label className="block font-semibold mb-1">Category:</label>
           <input
             type="text"
-            className="form-control"
-            name="thumbnail"
-            value={productData.thumbnail}
+            name="category"
+            value={form.category}
             onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-md"
           />
         </div>
-        <button type="submit" className="btn btn-primary me-2">
-          Save Changes
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block font-semibold mb-1">Price:</label>
+            <input
+              type="number"
+              name="price"
+              value={form.price}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold mb-1">Stock:</label>
+            <input
+              type="number"
+              name="stock"
+              value={form.stock}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md"
+            />
+          </div>
+        </div>
+        <button
+          type="submit"
+          className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+        >
+          Update Product
         </button>
-        <Link to="/" className="btn btn-secondary">
-          Cancel
-        </Link>
       </form>
     </div>
   );
