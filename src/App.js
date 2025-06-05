@@ -8,6 +8,7 @@ import EditProduct from "./components/EditProduct";
 import DeleteProduct from "./components/DeleteProduct";
 import GetProduct from "./components/GetProduct";
 import AddProductPage from "./pages/AddProductPage";
+import ViewProductPage from "./pages/ViewProductPage"; 
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -90,6 +91,10 @@ function App() {
             <Route
               path="/product/:id"
               element={<GetProduct getProductById={getProductById} />}
+            />
+            <Route
+              path="/view-detail"
+              element={<ViewProductPage />}
             />
           </Routes>
         </main>

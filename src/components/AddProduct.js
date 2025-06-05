@@ -8,6 +8,11 @@ const AddProduct = ({ onAdd }) => {
     title: "",
     description: "",
     price: "",
+    discountPercentage: "",
+    rating: "",
+    stock: "",
+    brand: "",
+    category: "",
     thumbnail: "",
   });
 
@@ -17,19 +22,31 @@ const AddProduct = ({ onAdd }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.title || !form.price)
-      return alert("Title and Price required");
+    if (!form.title || !form.price) return alert("Title and Price required");
 
     const productToAdd = {
       ...form,
       id: Date.now(),
-      thumbnail:
-        form.thumbnail.trim() === "" ? dummyImage : form.thumbnail.trim(),
+      price: parseFloat(form.price),
+      discountPercentage: parseFloat(form.discountPercentage) || 0,
+      rating: parseFloat(form.rating) || 0,
+      stock: parseInt(form.stock) || 0,
+      thumbnail: form.thumbnail.trim() === "" ? dummyImage : form.thumbnail.trim(),
     };
 
     onAdd(productToAdd);
 
-    setForm({ title: "", description: "", price: "", thumbnail: "" });
+    setForm({
+      title: "",
+      description: "",
+      price: "",
+      discountPercentage: "",
+      rating: "",
+      stock: "",
+      brand: "",
+      category: "",
+      thumbnail: "",
+    });
   };
 
   return (
@@ -39,6 +56,7 @@ const AddProduct = ({ onAdd }) => {
     >
       <h2 className="mb-4 text-center text-success">Add New Product</h2>
       <form onSubmit={handleSubmit}>
+        {/* Title */}
         <div className="mb-3">
           <label htmlFor="title" className="form-label fw-semibold">
             Title <span className="text-danger">*</span>
@@ -56,6 +74,7 @@ const AddProduct = ({ onAdd }) => {
           />
         </div>
 
+        {/* Description */}
         <div className="mb-3">
           <label htmlFor="description" className="form-label fw-semibold">
             Description
@@ -67,10 +86,11 @@ const AddProduct = ({ onAdd }) => {
             placeholder="Enter product description"
             value={form.description}
             onChange={handleChange}
-            rows={4}
+            rows={3}
           />
         </div>
 
+        {/* Price */}
         <div className="mb-3">
           <label htmlFor="price" className="form-label fw-semibold">
             Price <span className="text-danger">*</span>
@@ -89,6 +109,96 @@ const AddProduct = ({ onAdd }) => {
           />
         </div>
 
+        {/* Discount Percentage */}
+        <div className="mb-3">
+          <label htmlFor="discountPercentage" className="form-label fw-semibold">
+            Discount Percentage
+          </label>
+          <input
+            id="discountPercentage"
+            type="number"
+            name="discountPercentage"
+            className="form-control"
+            placeholder="Enter discount percentage"
+            value={form.discountPercentage}
+            onChange={handleChange}
+            min="0"
+            max="100"
+            step="0.01"
+          />
+        </div>
+
+        {/* Rating */}
+        <div className="mb-3">
+          <label htmlFor="rating" className="form-label fw-semibold">
+            Rating
+          </label>
+          <input
+            id="rating"
+            type="number"
+            name="rating"
+            className="form-control"
+            placeholder="Enter product rating"
+            value={form.rating}
+            onChange={handleChange}
+            min="0"
+            max="5"
+            step="0.1"
+          />
+        </div>
+
+        {/* Stock */}
+        <div className="mb-3">
+          <label htmlFor="stock" className="form-label fw-semibold">
+            Stock
+          </label>
+          <input
+            id="stock"
+            type="number"
+            name="stock"
+            className="form-control"
+            placeholder="Enter stock quantity"
+            value={form.stock}
+            onChange={handleChange}
+            min="0"
+          />
+        </div>
+
+        {/* Brand */}
+        <div className="mb-3">
+          <label htmlFor="brand" className="form-label fw-semibold">
+            Brand
+          </label>
+          <input
+            id="brand"
+            type="text"
+            name="brand"
+            className="form-control"
+            placeholder="Enter brand name"
+            value={form.brand}
+            onChange={handleChange}
+            autoComplete="off"
+          />
+        </div>
+
+        {/* Category */}
+        <div className="mb-3">
+          <label htmlFor="category" className="form-label fw-semibold">
+            Category
+          </label>
+          <input
+            id="category"
+            type="text"
+            name="category"
+            className="form-control"
+            placeholder="Enter category"
+            value={form.category}
+            onChange={handleChange}
+            autoComplete="off"
+          />
+        </div>
+
+        {/* Thumbnail URL */}
         <div className="mb-4">
           <label htmlFor="thumbnail" className="form-label fw-semibold">
             Image URL
