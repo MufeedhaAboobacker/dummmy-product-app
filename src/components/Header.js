@@ -8,7 +8,7 @@ const Header = () => (
    
         <Link
           to="/"
-          className="navbar-brand fw-bold fs-3 text-light"
+          className="navbar-brand fw-bold fs-3 text-success"
           style={{ fontFamily: "'Segoe UI'" }}
         >
           Product App

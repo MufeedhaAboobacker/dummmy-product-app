@@ -37,7 +37,7 @@ const AddProduct = ({ onAdd }) => {
       className="card shadow-sm p-4 mx-auto"
       style={{ maxWidth: 450, backgroundColor: "#f9f9f9", borderRadius: "10px" }}
     >
-      <h2 className="mb-4 text-center text-dark">Add New Product</h2>
+      <h2 className="mb-4 text-center text-success">Add New Product</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="title" className="form-label fw-semibold">

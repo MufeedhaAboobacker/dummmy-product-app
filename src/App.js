@@ -14,7 +14,7 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://dummyjson.com/products?limit=20")
+    fetch("https://dummyjson.com/products?limit=51")
       .then((res) => res.json())
       .then((data) => {
         setProducts(data.products);
@@ -36,13 +36,11 @@ function App() {
     setProducts((prev) => prev.filter((p) => p.id !== Number(id)));
   };
 
- 
   const updateProductById = (id, updatedData) => {
     setProducts((prev) =>
       prev.map((p) => (p.id === Number(id) ? { ...p, ...updatedData } : p))
     );
   };
-
 
   const addProduct = (newProduct) => {
     const maxId = products.reduce((max, p) => (p.id > max ? p.id : max), 0);
@@ -53,49 +51,51 @@ function App() {
   if (loading) return <p className="text-center mt-4">Loading products...</p>;
 
   return (
-    <Router>
-      <Header />
-      <main style={{ minHeight: "80vh", padding: "1rem 2rem" }}>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ListProduct
-                products={products}
-                getProductById={getProductById}
-              />
-            }
-          />
-          <Route
-            path="/add-product"
-            element={<AddProductPage onAdd={addProduct} />}
-          />
-          <Route
-            path="/edit/:id"
-            element={
-              <EditProduct
-                updateProductById={updateProductById}
-                getProductById={getProductById}
-              />
-            }
-          />
-          <Route
-            path="/delete/:id"
-            element={
-              <DeleteProduct
-                deleteProductById={deleteProductById}
-                getProductById={getProductById}
-              />
-            }
-          />
-          <Route
-            path="/product/:id"
-            element={<GetProduct getProductById={getProductById} />}
-          />
-        </Routes>
-      </main>
-      <Footer />
-    </Router>
+    <div className="d-flex flex-column min-vh-100">
+      <Router>
+        <Header />
+        <main className="flex-grow-1" style={{ padding: "1rem 2rem" }}>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <ListProduct
+                  products={products}
+                  getProductById={getProductById}
+                />
+              }
+            />
+            <Route
+              path="/add-product"
+              element={<AddProductPage onAdd={addProduct} />}
+            />
+            <Route
+              path="/edit/:id"
+              element={
+                <EditProduct
+                  updateProductById={updateProductById}
+                  getProductById={getProductById}
+                />
+              }
+            />
+            <Route
+              path="/delete/:id"
+              element={
+                <DeleteProduct
+                  deleteProductById={deleteProductById}
+                  getProductById={getProductById}
+                />
+              }
+            />
+            <Route
+              path="/product/:id"
+              element={<GetProduct getProductById={getProductById} />}
+            />
+          </Routes>
+        </main>
+        <Footer />
+      </Router>
+    </div>
   );
 }
 
