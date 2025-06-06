@@ -1,29 +1,39 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
-const ListProduct = ({ products }) => {
+const ListProduct = () => {
+  const [products, setProducts] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
   const [searchId, setSearchId] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 9;
 
-  
+  const limit = 9;
+
+  const fetchProducts = async () => {
+    try {
+      const skip = (page - 1) * limit;
+      const res = await axios.get(`https://dummyjson.com/products?limit=${limit}&skip=${skip}`);
+      setProducts(res.data.products);
+      setTotal(res.data.total);
+    } catch (err) {
+      console.error("Failed to fetch products:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
+
+  const totalPages = Math.ceil(total / limit);
+
   const filteredProducts = products.filter((product) =>
     product.id.toString().includes(searchId.trim())
   );
 
-  
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const indexOfLast = currentPage * productsPerPage;
-  const indexOfFirst = indexOfLast - productsPerPage;
-  const currentProducts = filteredProducts.slice(indexOfFirst, indexOfLast);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
   return (
     <div className="container my-5">
-      
       <div className="mb-4">
         <input
           type="text"
@@ -32,18 +42,16 @@ const ListProduct = ({ products }) => {
           value={searchId}
           onChange={(e) => {
             setSearchId(e.target.value);
-            setCurrentPage(1); 
+            setPage(1);
           }}
         />
       </div>
+
       <div className="row g-4">
-        {currentProducts.length > 0 ? (
-          currentProducts.map((product) => (
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map((product) => (
             <div key={product.id} className="col-md-4">
-              <div
-                className="card h-100 shadow-lg border-1"
-                style={{ borderRadius: "16px", overflow: "hidden" }}
-              >
+              <div className="card h-100 shadow-lg border-1" style={{ borderRadius: "16px", overflow: "hidden" }}>
                 <Link to="/view-detail" state={{ product }}>
                   <img
                     src={product.thumbnail}
@@ -58,7 +66,6 @@ const ListProduct = ({ products }) => {
                     onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
                   />
                 </Link>
-
                 <div className="card-body d-flex flex-column">
                   <h5 className="card-title text-dark fw-semibold">{product.title}</h5>
                   <p className="card-text text-muted small flex-grow-1">
@@ -86,49 +93,28 @@ const ListProduct = ({ products }) => {
         )}
       </div>
 
-      
+      {/* Pagination Controls */}
       {totalPages > 1 && (
-        <div className="d-flex justify-content-center mt-4">
-          <nav>
-            <ul className="pagination" 
-            style={{
-              "--bs-pagination-color": "#98a0ab",
-              "--bs-pagination-hover-color": "#98a0ab",
-              "--bs-pagination-active-bg": "#98a0ab",
-              "--bs-pagination-active-border-color": "#98a0ab",
-              "--bs-pagination-active-color": "#fff",
-            }}
-            >
-              <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                <button
-                  className="page-link"
-                  onClick={() => handlePageChange(currentPage - 1)}
-                >
-                  ← 
-                </button>
-              </li>
+        <div className="d-flex justify-content-center gap-2 mt-4">
+          <button
+            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            disabled={page === 1}
+            className="btn btn-outline-secondary"
+          >
+            ← Previous
+          </button>
 
-              {[...Array(totalPages).keys()].map((page) => (
-                <li
-                  key={page + 1}
-                  className={`page-item ${currentPage === page + 1 ? "active" : ""}`}
-                >
-                  <button className="page-link" onClick={() => handlePageChange(page + 1)}>
-                    {page + 1}
-                  </button>
-                </li>
-              ))}
+          <span className="px-3 py-2 align-self-center">
+            Page {page} of {totalPages}
+          </span>
 
-              <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                <button
-                  className="page-link" style={{border:"#98a0ab"}}
-                  onClick={() => handlePageChange(currentPage + 1)}
-                >
-                  →
-                </button>
-              </li>
-            </ul>
-          </nav>
+          <button
+            onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={page === totalPages}
+            className="btn btn-outline-secondary"
+          >
+            Next →
+          </button>
         </div>
       )}
     </div>

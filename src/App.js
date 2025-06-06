@@ -15,7 +15,7 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://dummyjson.com/products?limit=99")
+    fetch("https://dummyjson.com/products?limit=51")
       .then((res) => res.json())
       .then((data) => {
         setProducts(data.products);
