@@ -3,18 +3,19 @@ import { Link } from "react-router-dom";
 
 const Header = () => (
   <header>
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4 shadow-sm">
+    <nav
+      className="navbar navbar-expand-lg px-4 shadow-sm"
+      style={{ backgroundColor: "#8e99a8" }}
+    >
       <div className="container-fluid">
-   
         <Link
           to="/"
-          className="navbar-brand fw-bold fs-3 text-success"
-          style={{ fontFamily: "'arial'" }}
+          className="navbar-brand fw-bold fs-3"
+          style={{ fontFamily: "arial", color: "#ffffff" }}
         >
           Product App
         </Link>
 
-  
         <button
           className="navbar-toggler"
           type="button"
@@ -35,8 +36,12 @@ const Header = () => (
             <li>
               <Link
                 to="/"
-                className="btn btn-outline-success fw-semibold"
-                style={{ fontSize: "1.2rem" }}
+                className="btn fw-semibold"
+                style={{
+                  fontSize: "1.1rem",
+                  backgroundColor: "#ffffff",
+                  color: "#000000",
+                }}
               >
                 Product List
               </Link>
@@ -44,8 +49,12 @@ const Header = () => (
             <li>
               <Link
                 to="/add-product"
-                className="btn btn-success fw-semibold"
-                style={{ fontSize: "1.1rem" }}
+                className="btn fw-semibold"
+                style={{
+                  fontSize: "1.1rem",
+                  backgroundColor: "#ffffff",
+                  color: "#000000",
+                }}
               >
                 Add Product
               </Link>

@@ -8,32 +8,29 @@ import EditProduct from "./components/EditProduct";
 import DeleteProduct from "./components/DeleteProduct";
 import GetProduct from "./components/GetProduct";
 import AddProductPage from "./pages/AddProductPage";
-import ViewProductPage from "./pages/ViewProductPage";
-
-import api from "./api/axiosInstance"; 
+import ViewProductPage from "./pages/ViewProductPage"; 
 
 function App() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api
-      .get("/products?limit=51") 
-      .then((res) => {
-        setProducts(res.data.products);
+    fetch("https://dummyjson.com/products?limit=99")
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data.products);
         setLoading(false);
       })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-        setLoading(false);
-      });
+      .catch(() => setLoading(false));
   }, []);
 
   const getProductById = async (id) => {
     const localProduct = products.find((p) => p.id === Number(id));
     if (localProduct) return localProduct;
 
-    const res = await api.get(`/products/${id}`);
+    const res = await fetch(`https://dummyjson.com/products/${id}`);
+    if (!res.ok) throw new Error("Product not found");
+    return await res.json();
   };
 
   const deleteProductById = async (id) => {
@@ -95,7 +92,10 @@ function App() {
               path="/product/:id"
               element={<GetProduct getProductById={getProductById} />}
             />
-            <Route path="/view-detail" element={<ViewProductPage />} />
+            <Route
+              path="/view-detail"
+              element={<ViewProductPage />}
+            />
           </Routes>
         </main>
         <Footer />

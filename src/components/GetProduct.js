@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import api from "../api/axiosInstance"; // ✅ Axios instance
 
 const GetProduct = ({ productId: propId }) => {
-  const { id: paramId } = useParams();
-  const id = propId || paramId;
+  const { id: paramId } = useParams(); 
+  const id = propId || paramId; 
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -16,12 +15,16 @@ const GetProduct = ({ productId: propId }) => {
     setLoading(true);
     setError(null);
 
-    api.get(`/${id}`)
+    fetch(`https://dummyjson.com/products/${id}`)
       .then((res) => {
-        setProduct(res.data);
+        if (!res.ok) throw new Error("Product not found");
+        return res.json();
+      })
+      .then((data) => {
+        setProduct(data);
         setLoading(false);
       })
-      .catch(() => {
+      .catch((err) => {
         setError("Product not found");
         setLoading(false);
       });

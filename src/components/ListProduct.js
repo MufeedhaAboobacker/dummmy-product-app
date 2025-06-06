@@ -1,37 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import api from "../api/axiosInstance"; 
 
-const ListProduct = () => {
-  const [products, setProducts] = useState([]);
+const ListProduct = ({ products }) => {
   const [searchId, setSearchId] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const productsPerPage = 9;
 
-  const productsPerPage = 6;
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await api.get("/");
-        setProducts(response.data.products);
-      } catch (err) {
-        setError("Failed to fetch products");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
+  
   const filteredProducts = products.filter((product) =>
     product.id.toString().includes(searchId.trim())
   );
 
+  
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const indexOfLast = currentPage * productsPerPage;
   const indexOfFirst = indexOfLast - productsPerPage;
@@ -41,12 +21,9 @@ const ListProduct = () => {
     setCurrentPage(pageNumber);
   };
 
-  if (loading) return <p className="text-center mt-4">Loading products...</p>;
-  if (error) return <p className="text-danger text-center mt-4">{error}</p>;
-
   return (
     <div className="container my-5">
-     
+      
       <div className="mb-4">
         <input
           type="text"
@@ -55,11 +32,10 @@ const ListProduct = () => {
           value={searchId}
           onChange={(e) => {
             setSearchId(e.target.value);
-            setCurrentPage(1);
+            setCurrentPage(1); 
           }}
         />
       </div>
-
       <div className="row g-4">
         {currentProducts.length > 0 ? (
           currentProducts.map((product) => (
@@ -78,18 +54,13 @@ const ListProduct = () => {
                       objectFit: "cover",
                       transition: "transform 0.3s",
                     }}
-                    onMouseOver={(e) =>
-                      (e.currentTarget.style.transform = "scale(1.03)")
-                    }
-                    onMouseOut={(e) =>
-                      (e.currentTarget.style.transform = "scale(1)")
-                    }
+                    onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
+                    onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
                   />
                 </Link>
+
                 <div className="card-body d-flex flex-column">
-                  <h5 className="card-title text-dark fw-semibold">
-                    {product.title}
-                  </h5>
+                  <h5 className="card-title text-dark fw-semibold">{product.title}</h5>
                   <p className="card-text text-muted small flex-grow-1">
                     {product.description.length > 50
                       ? product.description.substring(0, 50) + "..."
@@ -99,16 +70,10 @@ const ListProduct = () => {
                     <span className="badge bg-success fs-6">${product.price}</span>
                   </div>
                   <div className="d-flex justify-content-between mt-3">
-                    <Link
-                      to={`/edit/${product.id}`}
-                      className="btn btn-sm btn-outline-warning"
-                    >
+                    <Link to={`/edit/${product.id}`} className="btn btn-sm btn-outline-warning">
                       ✏️ Edit
                     </Link>
-                    <Link
-                      to={`/delete/${product.id}`}
-                      className="btn btn-sm btn-outline-danger"
-                    >
+                    <Link to={`/delete/${product.id}`} className="btn btn-sm btn-outline-danger">
                       🗑️ Delete
                     </Link>
                   </div>
@@ -121,25 +86,47 @@ const ListProduct = () => {
         )}
       </div>
 
+      
       {totalPages > 1 && (
         <div className="d-flex justify-content-center mt-4">
           <nav>
-            <ul className="pagination">
+            <ul className="pagination" 
+            style={{
+              "--bs-pagination-color": "#98a0ab",
+              "--bs-pagination-hover-color": "#98a0ab",
+              "--bs-pagination-active-bg": "#98a0ab",
+              "--bs-pagination-active-border-color": "#98a0ab",
+              "--bs-pagination-active-color": "#fff",
+            }}
+            >
+              <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+                <button
+                  className="page-link"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                >
+                  ← 
+                </button>
+              </li>
+
               {[...Array(totalPages).keys()].map((page) => (
                 <li
                   key={page + 1}
-                  className={`page-item ${
-                    currentPage === page + 1 ? "active" : ""
-                  }`}
+                  className={`page-item ${currentPage === page + 1 ? "active" : ""}`}
                 >
-                  <button
-                    className="page-link"
-                    onClick={() => handlePageChange(page + 1)}
-                  >
+                  <button className="page-link" onClick={() => handlePageChange(page + 1)}>
                     {page + 1}
                   </button>
                 </li>
               ))}
+
+              <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+                <button
+                  className="page-link" style={{border:"#98a0ab"}}
+                  onClick={() => handlePageChange(currentPage + 1)}
+                >
+                  →
+                </button>
+              </li>
             </ul>
           </nav>
         </div>
