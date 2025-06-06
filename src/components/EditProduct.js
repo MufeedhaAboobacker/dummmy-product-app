@@ -1,7 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import api from "../api/axiosInstance";
 
-const EditProduct = ({ getProductById, updateProductById }) => {
+const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -18,7 +19,8 @@ const EditProduct = ({ getProductById, updateProductById }) => {
   useEffect(() => {
     async function fetchProduct() {
       try {
-        const data = await getProductById(id);
+        const res = await api.get(`/${id}`);
+        const data = res.data;
         setForm({
           title: data.title || "",
           description: data.description || "",
@@ -32,7 +34,7 @@ const EditProduct = ({ getProductById, updateProductById }) => {
       }
     }
     fetchProduct();
-  }, [id, getProductById]);
+  }, [id]);
 
   const isValidImageSrc =
     form.image.startsWith("data:image") ||
@@ -57,7 +59,7 @@ const EditProduct = ({ getProductById, updateProductById }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await updateProductById(id, form);
+      await api.put(`/${id}`, form);
       navigate("/");
     } catch {
       setError("Update failed");
@@ -77,9 +79,7 @@ const EditProduct = ({ getProductById, updateProductById }) => {
         <form onSubmit={handleSubmit}>
 
           <div className="mb-4">
-            <label htmlFor="title" className="form-label fw-semibold">
-              Title
-            </label>
+            <label htmlFor="title" className="form-label fw-semibold">Title</label>
             <input
               id="title"
               type="text"
@@ -93,9 +93,7 @@ const EditProduct = ({ getProductById, updateProductById }) => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="description" className="form-label fw-semibold">
-              Description
-            </label>
+            <label htmlFor="description" className="form-label fw-semibold">Description</label>
             <textarea
               id="description"
               name="description"
@@ -109,9 +107,7 @@ const EditProduct = ({ getProductById, updateProductById }) => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="price" className="form-label fw-semibold">
-              Price (₹)
-            </label>
+            <label htmlFor="price" className="form-label fw-semibold">Price (₹)</label>
             <input
               id="price"
               type="number"
@@ -127,9 +123,7 @@ const EditProduct = ({ getProductById, updateProductById }) => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="image" className="form-label fw-semibold">
-              Image URL or Base64
-            </label>
+            <label htmlFor="image" className="form-label fw-semibold">Image URL or Base64</label>
             <input
               id="image"
               type="text"

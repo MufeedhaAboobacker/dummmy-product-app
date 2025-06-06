@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import api from "../api/axiosInstance"; // ✅ Import Axios instance
 
-const DeleteProduct = ({ getProductById, deleteProductById }) => {
+const DeleteProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -11,21 +12,21 @@ const DeleteProduct = ({ getProductById, deleteProductById }) => {
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    getProductById(id)
-      .then((prod) => {
-        setProduct(prod);
+    api.get(`/${id}`)
+      .then((res) => {
+        setProduct(res.data);
         setLoading(false);
       })
       .catch(() => {
         setError("Product not found");
         setLoading(false);
       });
-  }, [id, getProductById]);
+  }, [id]);
 
   const handleDelete = async () => {
     setDeleting(true);
     try {
-      await deleteProductById(id);
+      await api.delete(`/${id}`);
       navigate("/");
     } catch {
       setError("Failed to delete product");
